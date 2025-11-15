@@ -18,6 +18,25 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to see the
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
 
+## Docker
+
+This project is fully containerized and can be run using Docker. The Docker setup uses Bun for package management, matching your local development environment.
+
+### Production Build
+
+Build and run the production container:
+
+```bash
+docker-compose up --build
+```
+
+Or using Docker directly:
+
+```bash
+docker build -t next-app .
+docker run -p 3000:3000 next-app
+```
+
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
 ## Learn More
