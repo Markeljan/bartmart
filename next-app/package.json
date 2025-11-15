@@ -1,13 +1,13 @@
 {
-	"name": "x420-agent",
+	"name": "bartmart",
 	"version": "0.1.0",
 	"private": true,
 	"scripts": {
 		"dev": "next dev",
 		"build": "next build",
 		"start": "next start",
-		"lint": "biome check",
-		"format": "biome format --write"
+		"check": "ultracite check",
+		"fix": "ultracite fix"
 	},
 	"dependencies": {
 		"next": "16.0.3",
