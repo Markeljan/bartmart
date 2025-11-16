@@ -7,11 +7,12 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		"includes": ["**", "!!**/dist"]
+		"includes": ["**", "!!**/dist", "!!**/generated.ts"]
 	},
 	"assist": {
 		"actions": {
 			"source": {
+				"recommended": true,
 				"organizeImports": "on"
 			}
 		}
@@ -24,7 +25,15 @@
 	"linter": {
 		"enabled": true,
 		"rules": {
-			"recommended": true
+			"recommended": true,
+			"complexity": {
+				"noExcessiveCognitiveComplexity": {
+					"level": "warn",
+					"options": {
+						"maxAllowedComplexity": 50
+					}
+				}
+			}
 		}
 	},
 	"css": {

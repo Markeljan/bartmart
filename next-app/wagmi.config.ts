@@ -1,0 +1,197 @@
+import { defineConfig } from "@wagmi/cli";
+import { react } from "@wagmi/cli/plugins";
+
+export default defineConfig({
+  out: "lib/wagmi/generated.ts",
+  contracts: [
+    {
+      name: "BartMart",
+      address: "0x03735E64c156d8C0D79a0cc5Fd979A95f67FC94C",
+      abi: [
+        { inputs: [], name: "InsufficientETH", type: "error" },
+        { inputs: [], name: "InsufficientTokenAllowance", type: "error" },
+        { inputs: [], name: "InvalidAmount", type: "error" },
+        { inputs: [], name: "InvalidTokenPair", type: "error" },
+        { inputs: [], name: "OrderAlreadyFulfilled", type: "error" },
+        { inputs: [], name: "OrderIsCancelled", type: "error" },
+        { inputs: [], name: "OrderNotFound", type: "error" },
+        { inputs: [], name: "TransferFailed", type: "error" },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "orderId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "creator",
+              type: "address",
+            },
+          ],
+          name: "OrderCancelled",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "orderId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "creator",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "inputToken",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "inputAmount",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "outputToken",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "outputAmount",
+              type: "uint256",
+            },
+          ],
+          name: "OrderCreated",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "orderId",
+              type: "uint256",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "fulfiller",
+              type: "address",
+            },
+            {
+              indexed: true,
+              internalType: "address",
+              name: "creator",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "inputToken",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "inputAmount",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "outputToken",
+              type: "address",
+            },
+            {
+              indexed: false,
+              internalType: "uint256",
+              name: "outputAmount",
+              type: "uint256",
+            },
+          ],
+          name: "OrderFulfilled",
+          type: "event",
+        },
+        {
+          inputs: [{ internalType: "uint256", name: "orderId", type: "uint256" }],
+          name: "cancelOrder",
+          outputs: [],
+          stateMutability: "nonpayable",
+          type: "function",
+        },
+        {
+          inputs: [
+            { internalType: "address", name: "inputToken", type: "address" },
+            { internalType: "uint256", name: "inputAmount", type: "uint256" },
+            { internalType: "address", name: "outputToken", type: "address" },
+            { internalType: "uint256", name: "outputAmount", type: "uint256" },
+          ],
+          name: "createOrder",
+          outputs: [{ internalType: "uint256", name: "orderId", type: "uint256" }],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [{ internalType: "uint256", name: "orderId", type: "uint256" }],
+          name: "fulfilOrder",
+          outputs: [],
+          stateMutability: "payable",
+          type: "function",
+        },
+        {
+          inputs: [{ internalType: "uint256", name: "orderId", type: "uint256" }],
+          name: "getOrder",
+          outputs: [
+            { internalType: "address", name: "creator", type: "address" },
+            { internalType: "address", name: "inputToken", type: "address" },
+            { internalType: "uint256", name: "inputAmount", type: "uint256" },
+            { internalType: "address", name: "outputToken", type: "address" },
+            { internalType: "uint256", name: "outputAmount", type: "uint256" },
+            { internalType: "bool", name: "fulfilled", type: "bool" },
+            { internalType: "bool", name: "cancelled", type: "bool" },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "orderCounter",
+          outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+          name: "orders",
+          outputs: [
+            { internalType: "address", name: "creator", type: "address" },
+            { internalType: "address", name: "inputToken", type: "address" },
+            { internalType: "uint256", name: "inputAmount", type: "uint256" },
+            { internalType: "address", name: "outputToken", type: "address" },
+            { internalType: "uint256", name: "outputAmount", type: "uint256" },
+            { internalType: "bool", name: "fulfilled", type: "bool" },
+            { internalType: "bool", name: "cancelled", type: "bool" },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+      ] as const,
+    },
+  ],
+  plugins: [react()],
+});

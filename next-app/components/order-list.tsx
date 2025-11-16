@@ -1,0 +1,244 @@
+"use client";
+
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type { Address } from "viem";
+import {
+  useReadBartMartOrderCounter,
+  useReadBartMartOrders,
+  useWatchBartMartOrderCancelledEvent,
+  useWatchBartMartOrderCreatedEvent,
+  useWatchBartMartOrderFulfilledEvent,
+} from "@/lib/wagmi/generated";
+import { OrderCard } from "./order-card";
+
+type OrderStatus = "all" | "active" | "fulfilled" | "cancelled";
+
+type OrderListProps = {
+  statusFilter?: OrderStatus;
+};
+
+type OrderData = {
+  orderId: bigint;
+  creator: Address;
+  inputToken: Address;
+  inputAmount: bigint;
+  outputToken: Address;
+  outputAmount: bigint;
+  fulfilled: boolean;
+  cancelled: boolean;
+};
+
+// Component to fetch a single order
+function OrderFetcher({
+  orderId,
+  onData,
+  refreshKey,
+}: {
+  orderId: bigint;
+  onData: (order: OrderData | null) => void;
+  refreshKey?: number;
+}) {
+  const { data, refetch } = useReadBartMartOrders({ args: [orderId] });
+
+  // Refetch when refreshKey changes
+  useEffect(() => {
+    if (refreshKey !== undefined && refreshKey > 0) {
+      refetch();
+    }
+  }, [refreshKey, refetch]);
+
+  useEffect(() => {
+    if (!data) {
+      onData(null);
+      return;
+    }
+    const [creator, inputToken, inputAmount, outputToken, outputAmount, fulfilled, cancelled] = data;
+
+    const orderData: OrderData = {
+      orderId,
+      creator: creator as Address,
+      inputToken: inputToken as Address,
+      inputAmount: inputAmount as bigint,
+      outputToken: outputToken as Address,
+      outputAmount: outputAmount as bigint,
+      fulfilled: fulfilled as boolean,
+      cancelled: cancelled as boolean,
+    };
+
+    onData(orderData);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [data, orderId, onData]); // onData is stable due to useCallback, but we exclude it to be safe
+
+  return null;
+}
+
+export function OrderList({ statusFilter = "all" }: OrderListProps) {
+  const { data: orderCount, isLoading: isLoadingCount, refetch: refetchOrderCount } = useReadBartMartOrderCounter();
+
+  // Store orders in state
+  const [ordersMap, setOrdersMap] = useState<Map<bigint, OrderData>>(new Map());
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  // Create array of order IDs to fetch
+  const orderIds = useMemo(() => {
+    if (!orderCount || orderCount === 0n) {
+      return [];
+    }
+    const count = Number(orderCount);
+    return Array.from({ length: count }, (_, i) => BigInt(i));
+  }, [orderCount]);
+
+  // Watch for new orders
+  useWatchBartMartOrderCreatedEvent({
+    onLogs: () => {
+      refetchOrderCount();
+    },
+  });
+
+  // Watch for fulfilled orders
+  useWatchBartMartOrderFulfilledEvent({
+    onLogs: () => {
+      // Trigger refresh
+      setRefreshKey((prev) => prev + 1);
+    },
+  });
+
+  // Watch for cancelled orders
+  useWatchBartMartOrderCancelledEvent({
+    onLogs: () => {
+      // Trigger refresh
+      setRefreshKey((prev) => prev + 1);
+    },
+  });
+
+  // Memoize callbacks per orderId to prevent infinite loops
+  const orderCallbacksRef = useMemo(() => new Map<bigint, (order: OrderData | null) => void>(), []);
+
+  const getOrderCallback = useCallback(
+    (orderId: bigint) => {
+      if (!orderCallbacksRef.has(orderId)) {
+        orderCallbacksRef.set(orderId, (order: OrderData | null) => {
+          setOrdersMap((prev) => {
+            const next = new Map(prev);
+            if (order) {
+              const existing = next.get(orderId);
+              // Only update if the order data has actually changed
+              if (
+                !existing ||
+                existing.creator !== order.creator ||
+                existing.inputToken !== order.inputToken ||
+                existing.inputAmount !== order.inputAmount ||
+                existing.outputToken !== order.outputToken ||
+                existing.outputAmount !== order.outputAmount ||
+                existing.fulfilled !== order.fulfilled ||
+                existing.cancelled !== order.cancelled
+              ) {
+                next.set(orderId, order);
+                return next;
+              }
+              return prev;
+            }
+            // If order is null, remove it
+            if (next.has(orderId)) {
+              next.delete(orderId);
+              return next;
+            }
+            return prev;
+          });
+        });
+      }
+      const callback = orderCallbacksRef.get(orderId);
+      if (!callback) {
+        throw new Error(`Callback not found for orderId ${orderId}`);
+      }
+      return callback;
+    },
+    [orderCallbacksRef]
+  );
+
+  const orders = useMemo(() => {
+    const allOrders = Array.from(ordersMap.values());
+
+    // Filter by status
+    return allOrders
+      .filter((order) => {
+        if (statusFilter === "active") {
+          return !(order.fulfilled || order.cancelled);
+        }
+        if (statusFilter === "fulfilled") {
+          return order.fulfilled;
+        }
+        if (statusFilter === "cancelled") {
+          return order.cancelled;
+        }
+        return true;
+      })
+      .sort((a, b) => {
+        // Sort by orderId descending (newest first)
+        if (a.orderId > b.orderId) {
+          return -1;
+        }
+        if (a.orderId < b.orderId) {
+          return 1;
+        }
+        return 0;
+      });
+  }, [ordersMap, statusFilter]);
+
+  const isLoading = isLoadingCount || orders.length < orderIds.length;
+
+  function getEmptyMessage(): string {
+    if (orderCount === 0n) {
+      return "No orders yet. Create the first one!";
+    }
+    const filterText = statusFilter === "all" ? "" : statusFilter;
+    return `No ${filterText} orders found.`;
+  }
+
+  function renderContent() {
+    if (isLoading) {
+      return (
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div
+              className="animate-pulse rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900"
+              key={i}
+            >
+              <div className="mb-4 h-4 w-1/4 rounded bg-zinc-200 dark:bg-zinc-700" />
+              <div className="h-20 rounded bg-zinc-200 dark:bg-zinc-700" />
+            </div>
+          ))}
+        </div>
+      );
+    }
+    if (orders.length === 0) {
+      return (
+        <div className="py-12 text-center">
+          <p className="text-zinc-500 dark:text-zinc-400">{getEmptyMessage()}</p>
+        </div>
+      );
+    }
+    return (
+      <div className="space-y-4">
+        {orders.map((order) => (
+          <OrderCard key={order.orderId.toString()} order={order} />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <>
+      {/* Render fetchers for all orders */}
+      {orderIds.map((orderId) => (
+        <OrderFetcher
+          key={orderId.toString()}
+          onData={getOrderCallback(orderId)}
+          orderId={orderId}
+          refreshKey={refreshKey}
+        />
+      ))}
+      {renderContent()}
+    </>
+  );
+}
