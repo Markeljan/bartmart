@@ -30,12 +30,6 @@ export const BASE_TOKENS: Record<string, TokenInfo> = {
     name: "Wrapped Ethereum",
     decimals: 18,
   },
-  DAI: {
-    address: "0x50c5725949A6F0c72E6C4a641F24049A917DB0Cb",
-    symbol: "DAI",
-    name: "Dai Stablecoin",
-    decimals: 18,
-  },
 };
 
 export const TOKEN_LIST = Object.values(BASE_TOKENS);

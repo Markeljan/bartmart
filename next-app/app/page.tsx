@@ -6,11 +6,11 @@ import { CreateOrderModal } from "@/components/create-order-modal";
 import { Header } from "@/components/header";
 import { OrderList } from "@/components/order-list";
 
-type OrderStatus = "all" | "active" | "fulfilled" | "cancelled";
+type OrderStatus = "live" | "completed";
 
 export default function Home() {
   const { isConnected } = useAccount();
-  const [statusFilter, setStatusFilter] = useState<OrderStatus>("all");
+  const [statusFilter, setStatusFilter] = useState<OrderStatus>("live");
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   return (
@@ -37,7 +37,7 @@ export default function Home() {
         </div>
 
         <div className="mb-6 flex gap-2 overflow-x-auto">
-          {(["all", "active", "fulfilled", "cancelled"] as OrderStatus[]).map((status) => (
+          {(["live", "completed"] as OrderStatus[]).map((status) => (
             <button
               className={`whitespace-nowrap rounded-lg px-4 py-2 font-medium text-sm ${
                 statusFilter === status
@@ -48,7 +48,7 @@ export default function Home() {
               onClick={() => setStatusFilter(status)}
               type="button"
             >
-              {status.charAt(0).toUpperCase() + status.slice(1)}
+              {status === "live" ? "Live Orders" : "Completed Orders"}
             </button>
           ))}
         </div>

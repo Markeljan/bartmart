@@ -113,14 +113,18 @@ export async function getOrders(filters: OrderFilters = {}): Promise<Order[]> {
     let orderIds: string[] = [];
 
     // Determine which set to query
-    if (filters.status === "fulfilled") {
-      orderIds = await client.smembers(Keys.ordersFulfilled());
-    } else if (filters.status === "cancelled") {
-      orderIds = await client.smembers(Keys.ordersCancelled());
-    } else if (filters.status === "active") {
+    if (filters.status === "live") {
+      // Live orders: active orders (not fulfilled and not cancelled)
       orderIds = await client.smembers(Keys.ordersActive());
+    } else if (filters.status === "completed") {
+      // Completed orders: fulfilled or cancelled
+      const [fulfilled, cancelled] = await Promise.all([
+        client.smembers(Keys.ordersFulfilled()),
+        client.smembers(Keys.ordersCancelled()),
+      ]);
+      orderIds = [...new Set([...fulfilled, ...cancelled])];
     } else {
-      // Get all orders by combining sets
+      // No filter or unknown status: get all orders
       const [active, fulfilled, cancelled] = await Promise.all([
         client.smembers(Keys.ordersActive()),
         client.smembers(Keys.ordersFulfilled()),

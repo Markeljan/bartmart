@@ -4,7 +4,7 @@ import { getOrders } from "@/lib/db/orders";
 import type { OrderFilters } from "@/lib/db/types";
 
 function parseStatusFilter(status: string | null): OrderFilters["status"] | undefined {
-  if (status && ["active", "fulfilled", "cancelled", "all"].includes(status)) {
+  if (status && ["live", "completed"].includes(status)) {
     return status as OrderFilters["status"];
   }
   return;

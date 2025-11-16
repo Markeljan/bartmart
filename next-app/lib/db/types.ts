@@ -49,7 +49,7 @@ export type UserStats = {
 };
 
 export type OrderFilters = {
-  status?: "active" | "fulfilled" | "cancelled" | "all";
+  status?: "live" | "completed";
   creator?: Address;
   inputToken?: Address;
   outputToken?: Address;

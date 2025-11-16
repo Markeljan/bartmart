@@ -11,7 +11,7 @@ import {
 } from "@/lib/wagmi/generated";
 import { OrderCard } from "./order-card";
 
-type OrderStatus = "all" | "active" | "fulfilled" | "cancelled";
+type OrderStatus = "live" | "completed";
 
 type OrderListProps = {
   statusFilter?: OrderStatus;
@@ -49,10 +49,17 @@ function OrderFetcher({
 
   useEffect(() => {
     if (!data) {
-      onData(null);
+      // Don't call onData yet - wait for data to load
       return;
     }
     const [creator, inputToken, inputAmount, outputToken, outputAmount, fulfilled, cancelled] = data;
+
+    // Check if order exists (creator is not zero address)
+    if (creator === "0x0000000000000000000000000000000000000000") {
+      // Order doesn't exist yet, mark as loaded but don't add to map
+      onData(null);
+      return;
+    }
 
     const orderData: OrderData = {
       orderId,
@@ -72,12 +79,13 @@ function OrderFetcher({
   return null;
 }
 
-export function OrderList({ statusFilter = "all" }: OrderListProps) {
+export function OrderList({ statusFilter = "live" }: OrderListProps) {
   const { data: orderCount, isLoading: isLoadingCount, refetch: refetchOrderCount } = useReadBartMartOrderCounter();
 
   // Store orders in state
   const [ordersMap, setOrdersMap] = useState<Map<bigint, OrderData>>(new Map());
   const [refreshKey, setRefreshKey] = useState(0);
+  const [loadedOrderIds, setLoadedOrderIds] = useState<Set<bigint>>(new Set());
 
   // Create array of order IDs to fetch
   const orderIds = useMemo(() => {
@@ -118,6 +126,15 @@ export function OrderList({ statusFilter = "all" }: OrderListProps) {
     (orderId: bigint) => {
       if (!orderCallbacksRef.has(orderId)) {
         orderCallbacksRef.set(orderId, (order: OrderData | null) => {
+          // Mark as loaded first
+          setLoadedOrderIds((prevIds) => {
+            if (prevIds.has(orderId)) {
+              return prevIds; // Already marked as loaded
+            }
+            return new Set(prevIds).add(orderId);
+          });
+
+          // Update orders map
           setOrdersMap((prev) => {
             const next = new Map(prev);
             if (order) {
@@ -138,7 +155,7 @@ export function OrderList({ statusFilter = "all" }: OrderListProps) {
               }
               return prev;
             }
-            // If order is null, remove it
+            // If order is null, remove it from map (but keep it marked as loaded)
             if (next.has(orderId)) {
               next.delete(orderId);
               return next;
@@ -162,14 +179,13 @@ export function OrderList({ statusFilter = "all" }: OrderListProps) {
     // Filter by status
     return allOrders
       .filter((order) => {
-        if (statusFilter === "active") {
+        if (statusFilter === "live") {
+          // Live orders: not fulfilled and not cancelled
           return !(order.fulfilled || order.cancelled);
         }
-        if (statusFilter === "fulfilled") {
-          return order.fulfilled;
-        }
-        if (statusFilter === "cancelled") {
-          return order.cancelled;
+        if (statusFilter === "completed") {
+          // Completed orders: fulfilled or cancelled
+          return order.fulfilled || order.cancelled;
         }
         return true;
       })
@@ -185,14 +201,18 @@ export function OrderList({ statusFilter = "all" }: OrderListProps) {
       });
   }, [ordersMap, statusFilter]);
 
-  const isLoading = isLoadingCount || orders.length < orderIds.length;
+  // Consider loading complete when we've attempted to load all order IDs
+  // or when we have data for all existing orders (non-zero creators)
+  const isLoading = isLoadingCount || loadedOrderIds.size < orderIds.length;
 
   function getEmptyMessage(): string {
     if (orderCount === 0n) {
       return "No orders yet. Create the first one!";
     }
-    const filterText = statusFilter === "all" ? "" : statusFilter;
-    return `No ${filterText} orders found.`;
+    if (statusFilter === "live") {
+      return "No live orders found.";
+    }
+    return "No completed orders found.";
   }
 
   function renderContent() {
