@@ -3,7 +3,6 @@
 import { Presentation } from "@/components/deck/presentation";
 import {
   ClosingSlide,
-  ContractFlowSlide,
   NextStepsSlide,
   ProblemSlide,
   ResultSlide,
@@ -16,7 +15,6 @@ export default function DeckPage() {
     <TitleSlide key="title" />,
     <ProblemSlide key="problem" />,
     <SolutionSlide key="solution" />,
-    <ContractFlowSlide key="contract-flow" />,
     <ResultSlide key="result" />,
     <NextStepsSlide key="next-steps" />,
     <ClosingSlide key="closing" />,

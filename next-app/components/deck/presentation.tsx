@@ -10,8 +10,8 @@ type SlideProps = {
 
 function Slide({ children, className }: SlideProps) {
   return (
-    <div className={cn("flex min-h-screen w-full flex-col items-center justify-center px-8 py-16", className)}>
-      {children}
+    <div className={cn("h-screen w-full overflow-y-auto overflow-x-hidden", className)}>
+      <div className="flex min-h-full w-full flex-col items-center justify-center px-8 py-16">{children}</div>
     </div>
   );
 }
@@ -27,10 +27,12 @@ export function Presentation({ slides, className }: PresentationProps) {
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowRight" || e.key === "ArrowDown" || e.key === " ") {
+      // Only handle slide navigation for Left/Right arrows and Space
+      // Up/Down arrows will be used for scrolling within slides
+      if (e.key === "ArrowRight" || e.key === " ") {
         e.preventDefault();
         setCurrentSlide((prev) => Math.min(prev + 1, totalSlides - 1));
-      } else if (e.key === "ArrowLeft" || e.key === "ArrowUp") {
+      } else if (e.key === "ArrowLeft") {
         e.preventDefault();
         setCurrentSlide((prev) => Math.max(prev - 1, 0));
       } else if (e.key === "Home") {
@@ -40,6 +42,7 @@ export function Presentation({ slides, className }: PresentationProps) {
         e.preventDefault();
         setCurrentSlide(totalSlides - 1);
       }
+      // ArrowUp and ArrowDown are not handled here, allowing default scroll behavior
     };
 
     window.addEventListener("keydown", handleKeyDown);
@@ -61,7 +64,7 @@ export function Presentation({ slides, className }: PresentationProps) {
           // Use the key from the slide element if available, otherwise use index
           const slideKey = (slide as React.ReactElement)?.key || `slide-${index}`;
           return (
-            <div className="min-w-full flex-shrink-0" key={slideKey}>
+            <div className="min-w-full shrink-0" key={slideKey}>
               {slide}
             </div>
           );
