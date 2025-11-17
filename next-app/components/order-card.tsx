@@ -69,7 +69,7 @@ export function OrderCard({ order }: OrderCardProps) {
         </div>
 
         <div className="mb-4 space-y-3">
-          <div className="rounded-lg border border-blue-200 bg-gradient-to-r from-blue-50 to-purple-50 p-4 dark:border-blue-800 dark:from-blue-950/30 dark:to-purple-950/30">
+          <div className="rounded-lg border border-blue-200 bg-linear-to-r from-blue-50 to-purple-50 p-4 dark:border-blue-800 dark:from-blue-950/30 dark:to-purple-950/30">
             <p className="mb-2 font-medium text-blue-600 text-xs uppercase tracking-wide dark:text-blue-400">
               Barter Market Order
             </p>
