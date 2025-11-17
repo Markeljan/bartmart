@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import { type Address, erc20Abi, maxUint256 } from "viem";
 import { useAccount, useBalance, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { useTokenMetadata } from "@/lib/hooks/use-token-metadata";
 import { isETH } from "@/lib/tokens";
 import { formatAmount, formatErrorMessage } from "@/lib/utils";
 import { bartMartAddress, useWriteBartMartFulfilOrder } from "@/lib/wagmi/generated";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 type Order = {
   orderId: bigint;
@@ -160,7 +160,10 @@ export function FulfillOrderButton({ order }: FulfillOrderButtonProps) {
 
   if (isFulfilled) {
     return (
-      <Badge variant="outline" className="bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400 border-green-200 dark:border-green-800">
+      <Badge
+        className="border-green-200 bg-green-50 text-green-600 dark:border-green-800 dark:bg-green-900/20 dark:text-green-400"
+        variant="outline"
+      >
         Order fulfilled
       </Badge>
     );

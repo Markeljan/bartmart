@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Address } from "viem";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   useReadBartMartOrderCounter,
   useReadBartMartOrders,
@@ -10,7 +11,6 @@ import {
   useWatchBartMartOrderFulfilledEvent,
 } from "@/lib/wagmi/generated";
 import { OrderCard } from "./order-card";
-import { Card, CardContent } from "@/components/ui/card";
 
 type OrderStatus = "live" | "completed";
 
@@ -221,7 +221,7 @@ export function OrderList({ statusFilter = "live" }: OrderListProps) {
       return (
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
-            <Card key={i} className="animate-pulse">
+            <Card className="animate-pulse" key={i}>
               <CardContent className="pt-6">
                 <div className="mb-4 h-4 w-1/4 rounded bg-zinc-200 dark:bg-zinc-700" />
                 <div className="h-20 rounded bg-zinc-200 dark:bg-zinc-700" />

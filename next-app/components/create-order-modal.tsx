@@ -3,11 +3,7 @@
 import { useEffect, useState } from "react";
 import { type Address, erc20Abi, isAddress, maxUint256 } from "viem";
 import { useAccount, useBalance, useReadContract, useWaitForTransactionReceipt, useWriteContract } from "wagmi";
-import { useTokenMetadata } from "@/lib/hooks/use-token-metadata";
-import { ETH_ADDRESS, isETH } from "@/lib/tokens";
-import { formatAmount, formatErrorMessage, parseAmountWithTokenInfo } from "@/lib/utils";
-import { bartMartAddress, useWriteBartMartCreateOrder } from "@/lib/wagmi/generated";
-import { TokenSelector } from "./token-selector";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -16,9 +12,13 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useTokenMetadata } from "@/lib/hooks/use-token-metadata";
+import { ETH_ADDRESS, isETH } from "@/lib/tokens";
+import { formatAmount, formatErrorMessage, parseAmountWithTokenInfo } from "@/lib/utils";
+import { bartMartAddress, useWriteBartMartCreateOrder } from "@/lib/wagmi/generated";
+import { TokenSelector } from "./token-selector";
 
 type CreateOrderModalProps = {
   isOpen: boolean;
@@ -223,13 +223,11 @@ export function CreateOrderModal({ isOpen, onClose, onSuccess }: CreateOrderModa
     (!needsApproval || approveSuccess);
 
   return (
-    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+    <Dialog onOpenChange={(open) => !open && onClose()} open={isOpen}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Create Order</DialogTitle>
-          <DialogDescription>
-            Create a new intent market order to exchange tokens.
-          </DialogDescription>
+          <DialogDescription>Create a new intent market order to exchange tokens.</DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
@@ -243,13 +241,13 @@ export function CreateOrderModal({ isOpen, onClose, onSuccess }: CreateOrderModa
             <div className="mt-2">
               <Label htmlFor="input-amount">Amount</Label>
               <Input
-                id="input-amount"
+                className="mt-1"
                 disabled={isCreating || isConfirming}
+                id="input-amount"
                 onChange={(e) => setInputAmount(e.target.value)}
                 placeholder="0.0"
                 type="text"
                 value={inputAmount}
-                className="mt-1"
               />
               <div className="mt-1 flex justify-between">
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -280,13 +278,13 @@ export function CreateOrderModal({ isOpen, onClose, onSuccess }: CreateOrderModa
             <div className="mt-2">
               <Label htmlFor="output-amount">Amount</Label>
               <Input
-                id="output-amount"
+                className="mt-1"
                 disabled={isCreating || isConfirming}
+                id="output-amount"
                 onChange={(e) => setOutputAmount(e.target.value)}
                 placeholder="0.0"
                 type="text"
                 value={outputAmount}
-                className="mt-1"
               />
               <div className="mt-1 flex justify-between">
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -321,11 +319,7 @@ export function CreateOrderModal({ isOpen, onClose, onSuccess }: CreateOrderModa
         </div>
 
         <DialogFooter>
-          <Button
-            variant="secondary"
-            disabled={isCreating || isConfirming}
-            onClick={onClose}
-          >
+          <Button disabled={isCreating || isConfirming} onClick={onClose} variant="secondary">
             Cancel
           </Button>
           <Button

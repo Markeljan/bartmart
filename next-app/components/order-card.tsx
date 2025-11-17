@@ -33,16 +33,8 @@ export function OrderCard({ order }: OrderCardProps) {
   const { tokenInfo: inputTokenInfo } = useTokenMetadata(order.inputToken);
   const { tokenInfo: outputTokenInfo } = useTokenMetadata(order.outputToken);
 
-  const inputAmountFormatted = formatAmount(
-    order.inputAmount,
-    order.inputToken,
-    inputTokenInfo?.decimals,
-  );
-  const outputAmountFormatted = formatAmount(
-    order.outputAmount,
-    order.outputToken,
-    outputTokenInfo?.decimals,
-  );
+  const inputAmountFormatted = formatAmount(order.inputAmount, order.inputToken, inputTokenInfo?.decimals);
+  const outputAmountFormatted = formatAmount(order.outputAmount, order.outputToken, outputTokenInfo?.decimals);
 
   return (
     <Card className="transition-shadow hover:shadow-lg">
@@ -57,24 +49,22 @@ export function OrderCard({ order }: OrderCardProps) {
                 Order #{order.orderId.toString()}
               </Link>
               {order.fulfilled && (
-                <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 border-green-200 dark:border-green-800">
+                <Badge className="border-green-200 bg-green-100 text-green-800 dark:border-green-800 dark:bg-green-900 dark:text-green-200">
                   Fulfilled
                 </Badge>
               )}
               {order.cancelled && (
-                <Badge className="bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200 border-red-200 dark:border-red-800">
+                <Badge className="border-red-200 bg-red-100 text-red-800 dark:border-red-800 dark:bg-red-900 dark:text-red-200">
                   Cancelled
                 </Badge>
               )}
               {isActive && (
-                <Badge className="bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200 border-blue-200 dark:border-blue-800">
+                <Badge className="border-blue-200 bg-blue-100 text-blue-800 dark:border-blue-800 dark:bg-blue-900 dark:text-blue-200">
                   Active
                 </Badge>
               )}
             </div>
-            <p className="text-sm text-zinc-500 dark:text-zinc-400">
-              Creator: {formatAddress(order.creator)}
-            </p>
+            <p className="text-sm text-zinc-500 dark:text-zinc-400">Creator: {formatAddress(order.creator)}</p>
           </div>
         </div>
 
@@ -84,15 +74,12 @@ export function OrderCard({ order }: OrderCardProps) {
               Barter Market Order
             </p>
             <p className="mb-3 font-semibold text-sm text-zinc-900 dark:text-zinc-50">
-              Wants to{" "}
-              <span className="text-green-600 dark:text-green-400">BUY</span>{" "}
-              {outputAmountFormatted} {outputTokenInfo?.symbol || "TOKEN"}
+              Wants to <span className="text-green-600 dark:text-green-400">BUY</span> {outputAmountFormatted}{" "}
+              {outputTokenInfo?.symbol || "TOKEN"}
             </p>
             <div className="flex items-center justify-between border-blue-200 border-t pt-3 dark:border-blue-800">
               <div>
-                <p className="mb-1 text-xs text-zinc-500 dark:text-zinc-400">
-                  Paying
-                </p>
+                <p className="mb-1 text-xs text-zinc-500 dark:text-zinc-400">Paying</p>
                 <p className="font-medium text-sm text-zinc-900 dark:text-zinc-50">
                   {inputAmountFormatted} {inputTokenInfo?.symbol || "TOKEN"}
                 </p>
@@ -106,18 +93,11 @@ export function OrderCard({ order }: OrderCardProps) {
                   stroke="currentColor"
                   viewBox="0 0 24 24"
                 >
-                  <path
-                    d="M13 7l5 5m0 0l-5 5m5-5H6"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                  />
+                  <path d="M13 7l5 5m0 0l-5 5m5-5H6" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
                 </svg>
               </div>
               <div className="text-right">
-                <p className="mb-1 text-xs text-zinc-500 dark:text-zinc-400">
-                  Receiving
-                </p>
+                <p className="mb-1 text-xs text-zinc-500 dark:text-zinc-400">Receiving</p>
                 <p className="font-medium text-sm text-zinc-900 dark:text-zinc-50">
                   {outputAmountFormatted} {outputTokenInfo?.symbol || "TOKEN"}
                 </p>
@@ -129,11 +109,7 @@ export function OrderCard({ order }: OrderCardProps) {
 
       {isActive && (
         <CardFooter className="border-t pt-4">
-          {isCreator ? (
-            <CancelOrderButton orderId={order.orderId} />
-          ) : (
-            <FulfillOrderButton order={order} />
-          )}
+          {isCreator ? <CancelOrderButton orderId={order.orderId} /> : <FulfillOrderButton order={order} />}
         </CardFooter>
       )}
     </Card>

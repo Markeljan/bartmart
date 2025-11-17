@@ -2,18 +2,11 @@
 
 import { useState } from "react";
 import { type Address, isAddress } from "viem";
-import { getTokenInfo, TOKEN_LIST } from "@/lib/tokens";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectSeparator,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { getTokenInfo, TOKEN_LIST } from "@/lib/tokens";
 
 type TokenSelectorProps = {
   value: Address | string;
@@ -55,19 +48,16 @@ export function TokenSelector({ value, onChange, label, disabled }: TokenSelecto
       {label && <Label htmlFor={label ? `token-selector-${label}` : undefined}>{label}</Label>}
       <div className="space-y-2">
         <Select
-          value={isCustomToken ? undefined : selectedValue || undefined}
-          onValueChange={handleSelectToken}
           disabled={disabled}
+          onValueChange={handleSelectToken}
+          value={isCustomToken ? undefined : selectedValue || undefined}
         >
-          <SelectTrigger
-            id={label ? `token-selector-${label}` : undefined}
-            className="w-full"
-          >
+          <SelectTrigger className="w-full" id={label ? `token-selector-${label}` : undefined}>
             <SelectValue>
               <span className="flex items-center gap-2">
                 <span className="font-medium">{selectedToken?.symbol || "Select token"}</span>
                 {selectedToken && selectedToken.symbol !== "UNKNOWN" && (
-                  <span className="text-xs text-muted-foreground">{selectedToken.name}</span>
+                  <span className="text-muted-foreground text-xs">{selectedToken.name}</span>
                 )}
               </span>
             </SelectValue>
@@ -77,7 +67,7 @@ export function TokenSelector({ value, onChange, label, disabled }: TokenSelecto
               <SelectItem key={token.address} value={token.address.toLowerCase()}>
                 <div className="flex flex-col">
                   <span className="font-medium">{token.symbol}</span>
-                  <span className="text-xs text-muted-foreground">{token.name}</span>
+                  <span className="text-muted-foreground text-xs">{token.name}</span>
                 </div>
               </SelectItem>
             ))}
@@ -88,31 +78,26 @@ export function TokenSelector({ value, onChange, label, disabled }: TokenSelecto
         {showCustomInput && (
           <div className="space-y-2">
             <Input
-              placeholder="0x..."
-              value={customAddress}
               onChange={(e) => setCustomAddress(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && isAddress(customAddress)) {
                   handleCustomAddress();
                 }
               }}
+              placeholder="0x..."
+              value={customAddress}
             />
             <div className="flex gap-2">
-              <Button
-                size="sm"
-                className="flex-1"
-                disabled={!isAddress(customAddress)}
-                onClick={handleCustomAddress}
-              >
+              <Button className="flex-1" disabled={!isAddress(customAddress)} onClick={handleCustomAddress} size="sm">
                 Use
               </Button>
               <Button
-                size="sm"
-                variant="secondary"
                 onClick={() => {
                   setShowCustomInput(false);
                   setCustomAddress("");
                 }}
+                size="sm"
+                variant="secondary"
               >
                 Cancel
               </Button>

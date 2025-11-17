@@ -5,24 +5,24 @@ import type * as React from "react";
 import { cn } from "@/lib/utils";
 
 const badgeVariants = cva(
-  "inline-flex items-center justify-center rounded-none border-4 border-foreground px-2 py-0.5 text-xs font-bold w-fit whitespace-nowrap shrink-0 [&>svg]:size-3 gap-1 [&>svg]:pointer-events-none focus-visible:border-ring focus-visible:ring-ring focus-visible:ring-4 aria-invalid:ring-destructive aria-invalid:border-destructive overflow-hidden shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] [a&]:cursor-pointer",
+  "inline-flex w-fit shrink-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap rounded-none border-4 border-foreground px-2 py-0.5 font-bold text-xs shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] focus-visible:border-ring focus-visible:ring-4 focus-visible:ring-ring aria-invalid:border-destructive aria-invalid:ring-destructive [&>svg]:pointer-events-none [&>svg]:size-3 [a&]:cursor-pointer",
   {
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground border-foreground [a&]:hover:bg-primary [a&]:hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] [a&]:hover:translate-x-[1px] [a&]:hover:translate-y-[1px] [a&]:transition-all",
+          "border-foreground bg-primary text-primary-foreground [a&]:transition-all [a&]:hover:translate-x-[1px] [a&]:hover:translate-y-[1px] [a&]:hover:bg-primary [a&]:hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]",
         secondary:
-          "bg-secondary text-secondary-foreground border-foreground [a&]:hover:bg-secondary [a&]:hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] [a&]:hover:translate-x-[1px] [a&]:hover:translate-y-[1px] [a&]:transition-all",
+          "border-foreground bg-secondary text-secondary-foreground [a&]:transition-all [a&]:hover:translate-x-[1px] [a&]:hover:translate-y-[1px] [a&]:hover:bg-secondary [a&]:hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]",
         destructive:
-          "bg-destructive text-white border-foreground [a&]:hover:bg-destructive focus-visible:ring-destructive focus-visible:border-destructive [a&]:hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] [a&]:hover:translate-x-[1px] [a&]:hover:translate-y-[1px] [a&]:transition-all",
+          "border-foreground bg-destructive text-white focus-visible:border-destructive focus-visible:ring-destructive [a&]:transition-all [a&]:hover:translate-x-[1px] [a&]:hover:translate-y-[1px] [a&]:hover:bg-destructive [a&]:hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]",
         outline:
-          "text-foreground border-foreground [a&]:hover:bg-accent [a&]:hover:text-accent-foreground [a&]:hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] [a&]:hover:translate-x-[1px] [a&]:hover:translate-y-[1px] [a&]:transition-all",
+          "border-foreground text-foreground [a&]:transition-all [a&]:hover:translate-x-[1px] [a&]:hover:translate-y-[1px] [a&]:hover:bg-accent [a&]:hover:text-accent-foreground [a&]:hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]",
       },
     },
     defaultVariants: {
       variant: "default",
     },
-  },
+  }
 );
 
 function Badge({
@@ -30,17 +30,10 @@ function Badge({
   variant,
   asChild = false,
   ...props
-}: React.ComponentProps<"span"> &
-  VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
+}: React.ComponentProps<"span"> & VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
   const Comp = asChild ? Slot : "span";
 
-  return (
-    <Comp
-      data-slot="badge"
-      className={cn(badgeVariants({ variant }), className)}
-      {...props}
-    />
-  );
+  return <Comp className={cn(badgeVariants({ variant }), className)} data-slot="badge" {...props} />;
 }
 
 export { Badge, badgeVariants };

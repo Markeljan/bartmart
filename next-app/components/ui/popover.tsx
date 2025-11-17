@@ -5,22 +5,13 @@ import type * as React from "react";
 
 import { cn } from "@/lib/utils";
 
-function Popover({
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Root>) {
+function Popover({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Root>) {
   return <PopoverPrimitive.Root data-slot="popover" {...props} />;
 }
 
-function PopoverTrigger({
-  className,
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
+function PopoverTrigger({ className, ...props }: React.ComponentProps<typeof PopoverPrimitive.Trigger>) {
   return (
-    <PopoverPrimitive.Trigger
-      data-slot="popover-trigger"
-      className={cn("cursor-pointer", className)}
-      {...props}
-    />
+    <PopoverPrimitive.Trigger className={cn("cursor-pointer", className)} data-slot="popover-trigger" {...props} />
   );
 }
 
@@ -33,22 +24,20 @@ function PopoverContent({
   return (
     <PopoverPrimitive.Portal>
       <PopoverPrimitive.Content
-        data-slot="popover-content"
         align={align}
-        sideOffset={sideOffset}
         className={cn(
-          "bg-popover text-popover-foreground z-50 w-72 origin-(--radix-popover-content-transform-origin) rounded-none border-4 border-foreground p-4 outline-hidden shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]",
-          className,
+          "z-50 w-72 origin-(--radix-popover-content-transform-origin) rounded-none border-4 border-foreground bg-popover p-4 text-popover-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] outline-hidden",
+          className
         )}
+        data-slot="popover-content"
+        sideOffset={sideOffset}
         {...props}
       />
     </PopoverPrimitive.Portal>
   );
 }
 
-function PopoverAnchor({
-  ...props
-}: React.ComponentProps<typeof PopoverPrimitive.Anchor>) {
+function PopoverAnchor({ ...props }: React.ComponentProps<typeof PopoverPrimitive.Anchor>) {
   return <PopoverPrimitive.Anchor data-slot="popover-anchor" {...props} />;
 }
 

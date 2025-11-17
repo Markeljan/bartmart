@@ -2,14 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { useAccount, useWaitForTransactionReceipt } from "wagmi";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { formatErrorMessage } from "@/lib/utils";
 import { useWriteBartMartCancelOrder } from "@/lib/wagmi/generated";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 type CancelOrderButtonProps = {
   orderId: bigint;
 };
+
 
 export function CancelOrderButton({ orderId }: CancelOrderButtonProps) {
   const [showConfirm, setShowConfirm] = useState(false);
@@ -51,7 +52,10 @@ export function CancelOrderButton({ orderId }: CancelOrderButtonProps) {
 
   if (isSuccess) {
     return (
-      <Badge variant="outline" className="bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400 border-green-200 dark:border-green-800">
+      <Badge
+        className="border-green-200 bg-green-50 text-green-600 dark:border-green-800 dark:bg-green-900/20 dark:text-green-400"
+        variant="outline"
+      >
         Order cancelled
       </Badge>
     );
@@ -60,19 +64,10 @@ export function CancelOrderButton({ orderId }: CancelOrderButtonProps) {
   if (showConfirm) {
     return (
       <div className="flex gap-2">
-        <Button
-          variant="destructive"
-          className="flex-1"
-          disabled={isWriting || isConfirming}
-          onClick={handleCancel}
-        >
+        <Button className="flex-1" disabled={isWriting || isConfirming} onClick={handleCancel} variant="destructive">
           {isWriting || isConfirming ? "Cancelling..." : "Confirm Cancel"}
         </Button>
-        <Button
-          variant="secondary"
-          disabled={isWriting || isConfirming}
-          onClick={() => setShowConfirm(false)}
-        >
+        <Button disabled={isWriting || isConfirming} onClick={() => setShowConfirm(false)} variant="secondary">
           Cancel
         </Button>
       </div>
@@ -82,7 +77,6 @@ export function CancelOrderButton({ orderId }: CancelOrderButtonProps) {
   return (
     <>
       <Button
-        variant="outline"
         className="flex-1 border-red-200 bg-red-50 text-red-600 hover:bg-red-100 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30"
         onClick={() => setShowConfirm(true)}
       >
