@@ -1,13 +1,7 @@
 "use client";
 
 import { Presentation } from "@/components/deck/presentation";
-import {
-  TitleSlide,
-  ProblemSlide,
-  SolutionSlide,
-  ResultSlide,
-  ClosingSlide,
-} from "@/components/deck/slides";
+import { ClosingSlide, ProblemSlide, ResultSlide, SolutionSlide, TitleSlide } from "@/components/deck/slides";
 
 export default function DeckPage() {
   const slides = [
@@ -38,4 +32,3 @@ export default function DeckPage() {
     </div>
   );
 }
-

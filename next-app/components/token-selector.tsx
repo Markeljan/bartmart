@@ -6,14 +6,7 @@ import { useAccount, useReadContract } from "wagmi";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectSeparator,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectSeparator, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useTokenMetadata } from "@/lib/hooks/use-token-metadata";
 import { getTokenInfo, isETH, TOKEN_LIST, type TokenInfo } from "@/lib/tokens";
 
@@ -71,35 +64,20 @@ function CustomTokenInfo({
   return (
     <div className="space-y-1">
       <div className="flex items-center gap-2">
-        <span className="font-medium text-xs text-zinc-700 dark:text-zinc-300">
-          {customTokenInfo.symbol}
-        </span>
+        <span className="font-medium text-xs text-zinc-700 dark:text-zinc-300">{customTokenInfo.symbol}</span>
         {customTokenInfo.name && customTokenInfo.name !== "Unknown Token" && (
-          <span className="text-xs text-zinc-500 dark:text-zinc-400">
-            {customTokenInfo.name}
-          </span>
+          <span className="text-xs text-zinc-500 dark:text-zinc-400">{customTokenInfo.name}</span>
         )}
       </div>
-      {!customTokenIsETH && (
-        <p className="text-xs text-zinc-500 dark:text-zinc-400">
-          Balance: {getBalanceText()}
-        </p>
-      )}
+      {!customTokenIsETH && <p className="text-xs text-zinc-500 dark:text-zinc-400">Balance: {getBalanceText()}</p>}
       {!(canUseCustomToken || isLoadingCustomToken) && (
-        <p className="text-red-600 text-xs dark:text-red-400">
-          {getErrorMessage()}
-        </p>
+        <p className="text-red-600 text-xs dark:text-red-400">{getErrorMessage()}</p>
       )}
     </div>
   );
 }
 
-export function TokenSelector({
-  value,
-  onChange,
-  label,
-  disabled,
-}: TokenSelectorProps) {
+export function TokenSelector({ value, onChange, label, disabled }: TokenSelectorProps) {
   const { address } = useAccount();
   const [customAddress, setCustomAddress] = useState("");
   const [showCustomInput, setShowCustomInput] = useState(false);
@@ -130,7 +108,7 @@ export function TokenSelector({
             }));
             setSavedTokens(tokens);
           }
-        },
+        }
       )
       .catch(() => {
         // Silently fail - will just use hardcoded tokens
@@ -142,14 +120,14 @@ export function TokenSelector({
     const tokenMap = new Map<string, TokenInfo>();
 
     // Add hardcoded tokens first
-    TOKEN_LIST.forEach((token) => {
+    for (const token of TOKEN_LIST) {
       tokenMap.set(token.address.toLowerCase(), token);
-    });
+    }
 
     // Add saved tokens (they will override hardcoded ones if same address)
-    savedTokens.forEach((token) => {
+    for (const token of savedTokens) {
       tokenMap.set(token.address.toLowerCase(), token);
-    });
+    }
 
     return Array.from(tokenMap.values());
   })();
@@ -157,33 +135,24 @@ export function TokenSelector({
   const selectedValue = value && isAddress(value) ? value.toLowerCase() : "";
 
   // Check if selected value is in the token list
-  const isCustomToken =
-    selectedValue &&
-    !allTokens.some((token) => token.address.toLowerCase() === selectedValue);
+  const isCustomToken = selectedValue && !allTokens.some((token) => token.address.toLowerCase() === selectedValue);
 
   // Fetch token metadata for selected custom token (if already selected)
-  const { tokenInfo: selectedTokenInfo } = useTokenMetadata(
-    isCustomToken && selectedValue ? selectedValue : "",
-  );
+  const { tokenInfo: selectedTokenInfo } = useTokenMetadata(isCustomToken && selectedValue ? selectedValue : "");
 
   // Get token info - use fetched metadata for custom tokens, otherwise use getTokenInfo
-  const selectedToken =
-    isCustomToken && selectedTokenInfo
-      ? selectedTokenInfo
-      : getTokenInfo(value);
+  const selectedToken = isCustomToken && selectedTokenInfo ? selectedTokenInfo : getTokenInfo(value);
 
   // Fetch token metadata for custom address
   const isValidCustomAddress = isAddress(customAddress);
   const customTokenIsETH = isValidCustomAddress && isETH(customAddress);
-  const { tokenInfo: customTokenInfo, isLoading: isLoadingCustomToken } =
-    useTokenMetadata(isValidCustomAddress ? customAddress : "");
+  const { tokenInfo: customTokenInfo, isLoading: isLoadingCustomToken } = useTokenMetadata(
+    isValidCustomAddress ? customAddress : ""
+  );
 
   // Check balance for custom token
   const { data: customTokenBalance } = useReadContract({
-    address:
-      isValidCustomAddress && !customTokenIsETH
-        ? (customAddress as Address)
-        : undefined,
+    address: isValidCustomAddress && !customTokenIsETH ? (customAddress as Address) : undefined,
     abi: erc20Abi,
     functionName: "balanceOf",
     args: address ? [address] : undefined,
@@ -193,11 +162,7 @@ export function TokenSelector({
   });
 
   // Determine if custom token is valid and user has balance
-  const isCustomTokenValid = Boolean(
-    isValidCustomAddress &&
-    customTokenInfo &&
-    customTokenInfo.symbol !== "UNKNOWN",
-  );
+  const isCustomTokenValid = Boolean(isValidCustomAddress && customTokenInfo && customTokenInfo.symbol !== "UNKNOWN");
 
   const hasCustomTokenBalance = (() => {
     if (customTokenIsETH) {
@@ -209,9 +174,7 @@ export function TokenSelector({
     return customTokenBalance !== undefined && customTokenBalance > 0n;
   })();
 
-  const canUseCustomToken = Boolean(
-    isCustomTokenValid && hasCustomTokenBalance,
-  );
+  const canUseCustomToken = Boolean(isCustomTokenValid && hasCustomTokenBalance);
 
   const handleSelectToken = (tokenAddress: string) => {
     if (tokenAddress === "custom-input") {
@@ -226,20 +189,10 @@ export function TokenSelector({
   const handleCustomAddress = () => {
     if (isAddress(customAddress) && canUseCustomToken && customTokenInfo) {
       // Add token to saved tokens list if it's not already there
-      if (
-        !allTokens.some(
-          (token) =>
-            token.address.toLowerCase() === customAddress.toLowerCase(),
-        )
-      ) {
+      if (!allTokens.some((token) => token.address.toLowerCase() === customAddress.toLowerCase())) {
         setSavedTokens((prev) => {
           // Check if already in list
-          if (
-            prev.some(
-              (token) =>
-                token.address.toLowerCase() === customAddress.toLowerCase(),
-            )
-          ) {
+          if (prev.some((token) => token.address.toLowerCase() === customAddress.toLowerCase())) {
             return prev;
           }
           return [
@@ -262,51 +215,35 @@ export function TokenSelector({
 
   return (
     <div className="relative">
-      {label && (
-        <Label htmlFor={label ? `token-selector-${label}` : undefined}>
-          {label}
-        </Label>
-      )}
+      {label && <Label htmlFor={label ? `token-selector-${label}` : undefined}>{label}</Label>}
       <div className="space-y-2">
-        <Select
-          disabled={disabled}
-          onValueChange={handleSelectToken}
-          value={selectedValue || undefined}
-        >
-          <SelectTrigger
-            className="w-full"
-            id={label ? `token-selector-${label}` : undefined}
-          >
+        <Select disabled={disabled} onValueChange={handleSelectToken} value={selectedValue || undefined}>
+          <SelectTrigger className="w-full" id={label ? `token-selector-${label}` : undefined}>
             <SelectValue>
               <span className="flex items-center gap-2">
                 <span className="font-medium">
-                  {selectedToken?.symbol && selectedToken.symbol !== "UNKNOWN"
-                    ? selectedToken.symbol
-                    : isCustomToken && !selectedTokenInfo
-                      ? "Loading..."
-                      : "Select token"}
+                  {(() => {
+                    if (selectedToken?.symbol && selectedToken.symbol !== "UNKNOWN") {
+                      return selectedToken.symbol;
+                    }
+                    if (isCustomToken && !selectedTokenInfo) {
+                      return "Loading...";
+                    }
+                    return "Select token";
+                  })()}
                 </span>
-                {selectedToken &&
-                  selectedToken.symbol !== "UNKNOWN" &&
-                  selectedToken.name && (
-                    <span className="text-muted-foreground text-xs">
-                      {selectedToken.name}
-                    </span>
-                  )}
+                {selectedToken && selectedToken.symbol !== "UNKNOWN" && selectedToken.name && (
+                  <span className="text-muted-foreground text-xs">{selectedToken.name}</span>
+                )}
               </span>
             </SelectValue>
           </SelectTrigger>
           <SelectContent>
             {allTokens.map((token) => (
-              <SelectItem
-                key={token.address}
-                value={token.address.toLowerCase()}
-              >
+              <SelectItem key={token.address} value={token.address.toLowerCase()}>
                 <div className="flex flex-col">
                   <span className="font-medium">{token.symbol}</span>
-                  <span className="text-muted-foreground text-xs">
-                    {token.name}
-                  </span>
+                  <span className="text-muted-foreground text-xs">{token.name}</span>
                 </div>
               </SelectItem>
             ))}
@@ -329,9 +266,7 @@ export function TokenSelector({
             {isValidCustomAddress && (
               <div className="space-y-1">
                 {isLoadingCustomToken && (
-                  <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                    Loading token info...
-                  </p>
+                  <p className="text-xs text-zinc-500 dark:text-zinc-400">Loading token info...</p>
                 )}
                 {!isLoadingCustomToken && customTokenInfo && (
                   <CustomTokenInfo
@@ -346,9 +281,7 @@ export function TokenSelector({
                   />
                 )}
                 {!(isLoadingCustomToken || customTokenInfo) && (
-                  <p className="text-red-600 text-xs dark:text-red-400">
-                    Invalid token address
-                  </p>
+                  <p className="text-red-600 text-xs dark:text-red-400">Invalid token address</p>
                 )}
               </div>
             )}

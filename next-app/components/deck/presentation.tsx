@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 type SlideProps = {
@@ -10,12 +10,7 @@ type SlideProps = {
 
 function Slide({ children, className }: SlideProps) {
   return (
-    <div
-      className={cn(
-        "flex min-h-screen w-full flex-col items-center justify-center px-8 py-16",
-        className
-      )}
-    >
+    <div className={cn("flex min-h-screen w-full flex-col items-center justify-center px-8 py-16", className)}>
       {children}
     </div>
   );
@@ -66,7 +61,7 @@ export function Presentation({ slides, className }: PresentationProps) {
           // Use the key from the slide element if available, otherwise use index
           const slideKey = (slide as React.ReactElement)?.key || `slide-${index}`;
           return (
-            <div key={slideKey} className="min-w-full flex-shrink-0">
+            <div className="min-w-full flex-shrink-0" key={slideKey}>
               {slide}
             </div>
           );
@@ -74,45 +69,46 @@ export function Presentation({ slides, className }: PresentationProps) {
       </div>
 
       {/* Navigation Dots */}
-      <div className="fixed bottom-8 left-1/2 z-50 flex -translate-x-1/2 gap-2">
+      <div className="-translate-x-1/2 fixed bottom-8 left-1/2 z-50 flex gap-2">
         {slides.map((slide, index) => {
           const slideKey = (slide as React.ReactElement)?.key || `slide-${index}`;
           return (
             <button
-              key={`dot-${slideKey}`}
-              onClick={() => goToSlide(index)}
+              aria-label={`Go to slide ${index + 1}`}
               className={cn(
                 "h-3 w-3 rounded-full border-2 border-foreground transition-all",
-                currentSlide === index
-                  ? "bg-main"
-                  : "bg-transparent hover:bg-main/50"
+                currentSlide === index ? "bg-main" : "bg-transparent hover:bg-main/50"
               )}
-              aria-label={`Go to slide ${index + 1}`}
+              key={`dot-${slideKey}`}
+              onClick={() => goToSlide(index)}
+              type="button"
             />
           );
         })}
       </div>
 
       {/* Slide Counter */}
-      <div className="fixed bottom-8 right-8 z-50 rounded-base border-2 border-foreground bg-card px-4 py-2 text-sm font-bold text-card-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+      <div className="fixed right-8 bottom-8 z-50 rounded-base border-2 border-foreground bg-card px-4 py-2 font-bold text-card-foreground text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
         {currentSlide + 1} / {totalSlides}
       </div>
 
       {/* Navigation Arrows */}
       {currentSlide > 0 && (
         <button
-          onClick={() => setCurrentSlide((prev) => prev - 1)}
-          className="fixed left-8 top-1/2 z-50 -translate-y-1/2 rounded-base border-4 border-foreground bg-main p-4 text-main-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-none"
           aria-label="Previous slide"
+          className="-translate-y-1/2 fixed top-1/2 left-8 z-50 rounded-base border-4 border-foreground bg-main p-4 text-main-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-[-4px] hover:translate-y-[-4px] hover:shadow-none"
+          onClick={() => setCurrentSlide((prev) => prev - 1)}
+          type="button"
         >
           ←
         </button>
       )}
       {currentSlide < totalSlides - 1 && (
         <button
-          onClick={() => setCurrentSlide((prev) => prev + 1)}
-          className="fixed right-8 top-1/2 z-50 -translate-y-1/2 rounded-base border-4 border-foreground bg-main p-4 text-main-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none"
           aria-label="Next slide"
+          className="-translate-y-1/2 fixed top-1/2 right-8 z-50 rounded-base border-4 border-foreground bg-main p-4 text-main-foreground shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all hover:translate-x-boxShadowX hover:translate-y-boxShadowY hover:shadow-none"
+          onClick={() => setCurrentSlide((prev) => prev + 1)}
+          type="button"
         >
           →
         </button>
@@ -122,4 +118,3 @@ export function Presentation({ slides, className }: PresentationProps) {
 }
 
 export { Slide };
-

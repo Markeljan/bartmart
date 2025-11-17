@@ -7,7 +7,7 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		"includes": ["**", "!!**/dist", "!!**/generated.ts"]
+		"includes": ["**", "!!**/dist", "!!**/generated.ts", "!!**/components/ui"]
 	},
 	"assist": {
 		"actions": {
