@@ -2,16 +2,11 @@
 
 import { Presentation } from "@/components/deck/presentation";
 import {
-  ArchitectureSlide,
-  CallToActionSlide,
   ClosingSlide,
-  CompetitiveSlide,
+  IntegrationsSlide,
   ProblemSlide,
-  ResultSlide,
-  RoadmapSlide,
   SolutionSlide,
   TitleSlide,
-  TractionSlide,
   UseCasesSlide,
 } from "@/components/deck/slides";
 
@@ -20,13 +15,8 @@ export default function DeckPage() {
     <TitleSlide key="title" />,
     <ProblemSlide key="problem" />,
     <SolutionSlide key="solution" />,
-    <ArchitectureSlide key="architecture" />,
-    <CompetitiveSlide key="competitive" />,
-    <UseCasesSlide key="use-cases" />,
-    <ResultSlide key="result" />,
-    <TractionSlide key="traction" />,
-    <RoadmapSlide key="roadmap" />,
-    <CallToActionSlide key="call-to-action" />,
+    <IntegrationsSlide key="integrations" />,
+    <UseCasesSlide key="use-cases-roadmap-get-involved" />,
     <ClosingSlide key="closing" />,
   ];
 
