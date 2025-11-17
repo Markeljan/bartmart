@@ -7,6 +7,8 @@ import { useTokenMetadata } from "@/lib/hooks/use-token-metadata";
 import { isETH } from "@/lib/tokens";
 import { formatAmount, formatErrorMessage } from "@/lib/utils";
 import { bartMartAddress, useWriteBartMartFulfilOrder } from "@/lib/wagmi/generated";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 type Order = {
   orderId: bigint;
@@ -158,9 +160,9 @@ export function FulfillOrderButton({ order }: FulfillOrderButtonProps) {
 
   if (isFulfilled) {
     return (
-      <div className="rounded bg-green-50 px-4 py-2 text-green-600 text-sm dark:bg-green-900/20 dark:text-green-400">
+      <Badge variant="outline" className="bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400 border-green-200 dark:border-green-800">
         Order fulfilled
-      </div>
+      </Badge>
     );
   }
 
@@ -168,14 +170,13 @@ export function FulfillOrderButton({ order }: FulfillOrderButtonProps) {
     const approvalErrorMessage = formatErrorMessage(approveError);
     return (
       <div className="flex-1">
-        <button
-          className="w-full rounded bg-blue-600 px-4 py-2 font-medium text-sm text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+        <Button
+          className="w-full bg-blue-600 hover:bg-blue-700"
           disabled={isApproving || !hasSufficientBalance}
           onClick={handleApprove}
-          type="button"
         >
           {isApproving ? "Approving..." : `Approve ${outputTokenInfo?.symbol || "Token"}`}
-        </button>
+        </Button>
         {approvalErrorMessage && <p className="mt-1 text-red-600 text-xs dark:text-red-400">{approvalErrorMessage}</p>}
         {!hasSufficientBalance && (
           <p className="mt-1 text-red-600 text-xs dark:text-red-400">
@@ -188,16 +189,15 @@ export function FulfillOrderButton({ order }: FulfillOrderButtonProps) {
 
   return (
     <div className="flex-1">
-      <button
-        className="w-full rounded bg-green-600 px-4 py-2 font-medium text-sm text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
+      <Button
+        className="w-full bg-green-600 hover:bg-green-700"
         disabled={isFulfilling || isConfirming || !hasSufficientBalance}
         onClick={handleFulfill}
-        type="button"
       >
         {isFulfilling || isConfirming
           ? "Fulfilling..."
           : `Provide ${formatAmount(order.outputAmount, order.outputToken, outputTokenInfo?.decimals)} ${outputTokenInfo?.symbol || "TOKEN"}`}
-      </button>
+      </Button>
       {fulfillError && (
         <p className="mt-1 text-red-600 text-xs dark:text-red-400">
           {formatErrorMessage(fulfillError) || "Transaction failed"}

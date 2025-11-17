@@ -1,17 +1,19 @@
 import "@/app/globals.css";
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Fredoka, Roboto_Mono } from "next/font/google";
 import { headers } from "next/headers";
 import { Web3Provider } from "@/components/web3-provider";
 
-const geistSans = Geist({
+const fredoka = Fredoka({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
-const geistMono = Geist_Mono({
+const robotoMono = Roboto_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -28,7 +30,7 @@ export default async function RootLayout({
   const cookies = headersObj.get("cookie");
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body className={`${fredoka.variable} ${robotoMono.variable} antialiased`}>
         <Web3Provider cookies={cookies}>{children}</Web3Provider>
       </body>
     </html>

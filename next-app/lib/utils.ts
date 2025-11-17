@@ -1,5 +1,7 @@
-import { type Address, formatUnits, parseUnits } from "viem";
-import { getTokenInfo, isETH } from "./tokens";
+import { getTokenInfo, isETH } from "@/lib/tokens";
+import { clsx, type ClassValue } from "clsx";
+import { twMerge } from "tailwind-merge";
+import { formatUnits, parseUnits, type Address } from "viem";
 
 // Regex patterns for error message cleaning (defined at top level for performance)
 const ERROR_PREFIX_REGEX = /^Error:\s*/i;
@@ -198,4 +200,8 @@ export function formatErrorMessage(error: Error | null | undefined): string | nu
   }
 
   return cleaned || "Transaction failed. Please try again";
+}
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
 }

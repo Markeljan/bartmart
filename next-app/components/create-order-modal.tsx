@@ -8,6 +8,17 @@ import { ETH_ADDRESS, isETH } from "@/lib/tokens";
 import { formatAmount, formatErrorMessage, parseAmountWithTokenInfo } from "@/lib/utils";
 import { bartMartAddress, useWriteBartMartCreateOrder } from "@/lib/wagmi/generated";
 import { TokenSelector } from "./token-selector";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 type CreateOrderModalProps = {
   isOpen: boolean;
@@ -211,43 +222,15 @@ export function CreateOrderModal({ isOpen, onClose, onSuccess }: CreateOrderModa
     hasSufficientBalance &&
     (!needsApproval || approveSuccess);
 
-  if (!isOpen) {
-    return null;
-  }
-
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center">
-      <button
-        aria-label="Close modal"
-        className="fixed inset-0 bg-black/50"
-        onClick={onClose}
-        onKeyDown={(e) => {
-          if (e.key === "Escape") {
-            onClose();
-          }
-        }}
-        type="button"
-      />
-      <div className="relative z-10 mx-4 w-full max-w-md rounded-lg bg-white p-6 shadow-xl dark:bg-zinc-900">
-        <div className="mb-6 flex items-center justify-between">
-          <h2 className="font-semibold text-xl text-zinc-900 dark:text-zinc-50">Create Order</h2>
-          <button
-            className="text-zinc-400 hover:text-zinc-600 dark:hover:text-zinc-300"
-            onClick={onClose}
-            type="button"
-          >
-            <svg
-              aria-label="Close"
-              className="h-6 w-6"
-              fill="none"
-              role="img"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path d="M6 18L18 6M6 6l12 12" strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} />
-            </svg>
-          </button>
-        </div>
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Create Order</DialogTitle>
+          <DialogDescription>
+            Create a new intent market order to exchange tokens.
+          </DialogDescription>
+        </DialogHeader>
 
         <div className="space-y-4">
           <div>
@@ -258,13 +241,15 @@ export function CreateOrderModal({ isOpen, onClose, onSuccess }: CreateOrderModa
               value={inputToken}
             />
             <div className="mt-2">
-              <input
-                className="w-full rounded-lg border border-zinc-300 bg-zinc-50 px-4 py-2 text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-500 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+              <Label htmlFor="input-amount">Amount</Label>
+              <Input
+                id="input-amount"
                 disabled={isCreating || isConfirming}
                 onChange={(e) => setInputAmount(e.target.value)}
                 placeholder="0.0"
                 type="text"
                 value={inputAmount}
+                className="mt-1"
               />
               <div className="mt-1 flex justify-between">
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -293,13 +278,15 @@ export function CreateOrderModal({ isOpen, onClose, onSuccess }: CreateOrderModa
               value={outputToken}
             />
             <div className="mt-2">
-              <input
-                className="w-full rounded-lg border border-zinc-300 bg-zinc-50 px-4 py-2 text-zinc-900 focus:outline-none focus:ring-2 focus:ring-zinc-500 disabled:opacity-50 dark:border-zinc-700 dark:bg-zinc-800 dark:text-zinc-50"
+              <Label htmlFor="output-amount">Amount</Label>
+              <Input
+                id="output-amount"
                 disabled={isCreating || isConfirming}
                 onChange={(e) => setOutputAmount(e.target.value)}
                 placeholder="0.0"
                 type="text"
                 value={outputAmount}
+                className="mt-1"
               />
               <div className="mt-1 flex justify-between">
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">
@@ -311,14 +298,13 @@ export function CreateOrderModal({ isOpen, onClose, onSuccess }: CreateOrderModa
 
           {needsApproval && !approveSuccess && (
             <div>
-              <button
-                className="w-full rounded bg-blue-600 px-4 py-2 font-medium text-sm text-white hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-50"
+              <Button
+                className="w-full bg-blue-600 hover:bg-blue-700"
                 disabled={isApproving || !hasSufficientBalance}
                 onClick={handleApprove}
-                type="button"
               >
                 {isApproving ? "Approving..." : `Approve ${inputTokenInfo?.symbol || "Token"}`}
-              </button>
+              </Button>
               {approveError && (
                 <p className="mt-1 text-red-600 text-xs dark:text-red-400">
                   {formatErrorMessage(approveError) || "Approval failed"}
@@ -332,27 +318,25 @@ export function CreateOrderModal({ isOpen, onClose, onSuccess }: CreateOrderModa
               {formatErrorMessage(createError) || "Failed to create order"}
             </p>
           )}
-
-          <div className="flex gap-2 pt-4">
-            <button
-              className="flex-1 rounded bg-zinc-200 px-4 py-2 font-medium text-sm text-zinc-700 hover:bg-zinc-300 disabled:opacity-50 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600"
-              disabled={isCreating || isConfirming}
-              onClick={onClose}
-              type="button"
-            >
-              Cancel
-            </button>
-            <button
-              className="flex-1 rounded bg-green-600 px-4 py-2 font-medium text-sm text-white hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50"
-              disabled={!isValid || isCreating || isConfirming}
-              onClick={handleCreateOrder}
-              type="button"
-            >
-              {isCreating || isConfirming ? "Creating..." : "Create Order"}
-            </button>
-          </div>
         </div>
-      </div>
-    </div>
+
+        <DialogFooter>
+          <Button
+            variant="secondary"
+            disabled={isCreating || isConfirming}
+            onClick={onClose}
+          >
+            Cancel
+          </Button>
+          <Button
+            className="bg-green-600 hover:bg-green-700"
+            disabled={!isValid || isCreating || isConfirming}
+            onClick={handleCreateOrder}
+          >
+            {isCreating || isConfirming ? "Creating..." : "Create Order"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }

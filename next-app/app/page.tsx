@@ -5,6 +5,7 @@ import { useAccount } from "wagmi";
 import { CreateOrderModal } from "@/components/create-order-modal";
 import { Header } from "@/components/header";
 import { OrderList } from "@/components/order-list";
+import { Button } from "@/components/ui/button";
 
 type OrderStatus = "live" | "completed";
 
@@ -14,20 +15,33 @@ export default function Home() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
   return (
-    <div className="flex min-h-screen flex-col bg-zinc-50 font-sans dark:bg-black">
+    <div className="relative flex min-h-screen flex-col font-sans">
+      {/* Background Image */}
+      <div
+        className="fixed inset-0 -z-10 bg-no-repeat"
+        style={{
+          backgroundImage: "url('/simpsons-1600x900.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          minHeight: "100vh",
+          minWidth: "100vw",
+        }}
+      />
+      {/* Overlay for readability */}
+      <div className="fixed inset-0 -z-10 bg-background/70 backdrop-blur-[1px] dark:bg-background/85" />
+
       <Header />
       <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col px-4 py-8 sm:px-6 lg:px-8">
         <div className="mb-6">
           <div className="mb-2 flex items-center justify-between">
-            <h1 className="font-bold text-2xl text-zinc-900 dark:text-zinc-50">Intent Market</h1>
+            <h1 className="font-bold text-2xl text-zinc-900 dark:text-zinc-50">Barter Market</h1>
             {isConnected && (
-              <button
-                className="rounded-lg bg-green-600 px-4 py-2 font-medium text-sm text-white hover:bg-green-700"
+              <Button
+                className="bg-green-600 hover:bg-green-700"
                 onClick={() => setIsCreateModalOpen(true)}
-                type="button"
               >
                 Create Order
-              </button>
+              </Button>
             )}
           </div>
           <p className="text-sm text-zinc-600 dark:text-zinc-400">
@@ -38,18 +52,13 @@ export default function Home() {
 
         <div className="mb-6 flex gap-2 overflow-x-auto">
           {(["live", "completed"] as OrderStatus[]).map((status) => (
-            <button
-              className={`whitespace-nowrap rounded-lg px-4 py-2 font-medium text-sm ${
-                statusFilter === status
-                  ? "bg-zinc-900 text-white dark:bg-zinc-100 dark:text-zinc-900"
-                  : "border border-zinc-300 bg-white text-zinc-700 hover:bg-zinc-100 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-300 dark:hover:bg-zinc-800"
-              }`}
+            <Button
               key={status}
+              variant={statusFilter === status ? "default" : "outline"}
               onClick={() => setStatusFilter(status)}
-              type="button"
             >
               {status === "live" ? "Live Orders" : "Completed Orders"}
-            </button>
+            </Button>
           ))}
         </div>
 

@@ -10,6 +10,7 @@ import {
   useWatchBartMartOrderFulfilledEvent,
 } from "@/lib/wagmi/generated";
 import { OrderCard } from "./order-card";
+import { Card, CardContent } from "@/components/ui/card";
 
 type OrderStatus = "live" | "completed";
 
@@ -220,13 +221,12 @@ export function OrderList({ statusFilter = "live" }: OrderListProps) {
       return (
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
-            <div
-              className="animate-pulse rounded-lg border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900"
-              key={i}
-            >
-              <div className="mb-4 h-4 w-1/4 rounded bg-zinc-200 dark:bg-zinc-700" />
-              <div className="h-20 rounded bg-zinc-200 dark:bg-zinc-700" />
-            </div>
+            <Card key={i} className="animate-pulse">
+              <CardContent className="pt-6">
+                <div className="mb-4 h-4 w-1/4 rounded bg-zinc-200 dark:bg-zinc-700" />
+                <div className="h-20 rounded bg-zinc-200 dark:bg-zinc-700" />
+              </CardContent>
+            </Card>
           ))}
         </div>
       );

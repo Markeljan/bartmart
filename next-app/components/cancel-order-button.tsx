@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { useAccount, useWaitForTransactionReceipt } from "wagmi";
 import { formatErrorMessage } from "@/lib/utils";
 import { useWriteBartMartCancelOrder } from "@/lib/wagmi/generated";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 type CancelOrderButtonProps = {
   orderId: bigint;
@@ -49,44 +51,43 @@ export function CancelOrderButton({ orderId }: CancelOrderButtonProps) {
 
   if (isSuccess) {
     return (
-      <div className="rounded bg-green-50 px-4 py-2 text-green-600 text-sm dark:bg-green-900/20 dark:text-green-400">
+      <Badge variant="outline" className="bg-green-50 text-green-600 dark:bg-green-900/20 dark:text-green-400 border-green-200 dark:border-green-800">
         Order cancelled
-      </div>
+      </Badge>
     );
   }
 
   if (showConfirm) {
     return (
       <div className="flex gap-2">
-        <button
-          className="flex-1 rounded bg-red-600 px-4 py-2 font-medium text-sm text-white hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-50"
+        <Button
+          variant="destructive"
+          className="flex-1"
           disabled={isWriting || isConfirming}
           onClick={handleCancel}
-          type="button"
         >
           {isWriting || isConfirming ? "Cancelling..." : "Confirm Cancel"}
-        </button>
-        <button
-          className="rounded bg-zinc-200 px-4 py-2 font-medium text-sm text-zinc-700 hover:bg-zinc-300 disabled:cursor-not-allowed disabled:opacity-50 dark:bg-zinc-700 dark:text-zinc-300 dark:hover:bg-zinc-600"
+        </Button>
+        <Button
+          variant="secondary"
           disabled={isWriting || isConfirming}
           onClick={() => setShowConfirm(false)}
-          type="button"
         >
           Cancel
-        </button>
+        </Button>
       </div>
     );
   }
 
   return (
     <>
-      <button
-        className="flex-1 rounded border border-red-200 bg-red-50 px-4 py-2 font-medium text-red-600 text-sm hover:bg-red-100 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30"
+      <Button
+        variant="outline"
+        className="flex-1 border-red-200 bg-red-50 text-red-600 hover:bg-red-100 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400 dark:hover:bg-red-900/30"
         onClick={() => setShowConfirm(true)}
-        type="button"
       >
         Cancel Order
-      </button>
+      </Button>
       {writeError && (
         <p className="mt-1 text-red-600 text-xs dark:text-red-400">
           {formatErrorMessage(writeError) || "Transaction failed"}
