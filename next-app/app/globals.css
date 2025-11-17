@@ -18,11 +18,11 @@
   --popover-foreground: oklch(15% 0.05 240);
   --input: oklch(100% 0.005 90);
   --shadow: 4px 4px 0px 0px var(--border);
-  --chart-1: #FFD700;
-  --chart-2: #4A90E2;
-  --chart-3: #E63946;
-  --chart-4: #4CAF50;
-  --chart-5: #FF9800;
+  --chart-1: #ffd700;
+  --chart-2: #4a90e2;
+  --chart-3: #e63946;
+  --chart-4: #4caf50;
+  --chart-5: #ff9800;
   --chart-active-dot: #000;
 }
 
@@ -40,11 +40,11 @@
   --popover-foreground: oklch(90% 0.05 90);
   --input: oklch(22% 0.02 0);
   --shadow: 4px 4px 0px 0px var(--border);
-  --chart-1: #FFEB3B;
-  --chart-2: #64B5F6;
-  --chart-3: #EF5350;
-  --chart-4: #66BB6A;
-  --chart-5: #FFB74D;
+  --chart-1: #ffeb3b;
+  --chart-2: #64b5f6;
+  --chart-3: #ef5350;
+  --chart-4: #66bb6a;
+  --chart-5: #ffb74d;
   --chart-active-dot: #fff;
 }
 

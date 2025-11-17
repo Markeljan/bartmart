@@ -11,7 +11,6 @@ type CancelOrderButtonProps = {
   orderId: bigint;
 };
 
-
 export function CancelOrderButton({ orderId }: CancelOrderButtonProps) {
   const [showConfirm, setShowConfirm] = useState(false);
   const { address } = useAccount();
