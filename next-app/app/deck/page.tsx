@@ -1,14 +1,24 @@
 "use client";
 
 import { Presentation } from "@/components/deck/presentation";
-import { ClosingSlide, ProblemSlide, ResultSlide, SolutionSlide, TitleSlide } from "@/components/deck/slides";
+import {
+  ClosingSlide,
+  ContractFlowSlide,
+  NextStepsSlide,
+  ProblemSlide,
+  ResultSlide,
+  SolutionSlide,
+  TitleSlide,
+} from "@/components/deck/slides";
 
 export default function DeckPage() {
   const slides = [
     <TitleSlide key="title" />,
     <ProblemSlide key="problem" />,
     <SolutionSlide key="solution" />,
+    <ContractFlowSlide key="contract-flow" />,
     <ResultSlide key="result" />,
+    <NextStepsSlide key="next-steps" />,
     <ClosingSlide key="closing" />,
   ];
 
