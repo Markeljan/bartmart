@@ -52,6 +52,7 @@ export function TitleSlide() {
   );
 }
 
+
 export function ProblemSlide() {
   return (
     <Slide className="bg-background">
@@ -63,7 +64,7 @@ export function ProblemSlide() {
           backgroundPosition: "center",
         }}
       />
-      <div className="z-10 w-full max-w-4xl">
+      <div className="z-10 w-full max-w-5xl">
         <Card className="border-4">
           <CardHeader>
             <CardTitle className="text-5xl md:text-6xl">The Problem</CardTitle>
@@ -72,14 +73,33 @@ export function ProblemSlide() {
             <div className="space-y-4">
               <p className="font-semibold">AI agents need difficult SDK integrations:</p>
               <ul className="ml-6 list-disc space-y-2">
-                <li>Must manage Uniswap V3, V4, Aerodrome, etc.</li>
-                <li>Each protocol requires separate SDK integration</li>
-                <li>New protocols constantly emerge</li>
+                <li>Must manage Uniswap V3, V4, Aerodrome, and dozens of other protocols</li>
+                <li>Each protocol requires separate SDK integration and maintenance</li>
+                <li>New protocols constantly emerge, requiring constant updates</li>
+                <li>Significant time spent on integration and maintenance</li>
               </ul>
             </div>
-            <div className="mt-8 flex items-center gap-4 rounded-base border-4 border-foreground bg-secondary-background p-6">
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              <div className="rounded-base border-4 border-foreground bg-secondary-background/80 p-4">
+                <p className="font-bold text-lg text-foreground">Human Traders Face:</p>
+                <ul className="ml-6 mt-2 list-disc space-y-1 text-base text-foreground">
+                  <li>High slippage on AMMs</li>
+                  <li>Limited OTC options</li>
+                  <li>Complex protocol integrations</li>
+                </ul>
+              </div>
+              <div className="rounded-base border-4 border-foreground bg-secondary-background/80 p-4">
+                <p className="font-bold text-lg text-foreground">Cost of Maintenance:</p>
+                <ul className="ml-6 mt-2 list-disc space-y-1 text-base text-foreground">
+                  <li>Significant developer time required</li>
+                  <li>Breaking changes in SDKs</li>
+                  <li>Testing across multiple protocols</li>
+                </ul>
+              </div>
+            </div>
+            <div className="mt-6 flex items-center gap-4 rounded-base border-4 border-foreground bg-secondary-background/80 p-6">
               <Image alt="Eigen Cloud" className="h-8 w-auto" height={32} src="/eigencloud-logo-blue.png" width={120} />
-              <p className="font-bold">
+              <p className="font-bold text-foreground">
                 Especially problematic for TEE environments like Eigen Compute where frequent deployments hurt user
                 trust and verifiability
               </p>
@@ -157,6 +177,16 @@ export function SolutionSlide() {
                 <p className="font-semibold">The market fulfills orders when conditions are favorable</p>
               </div>
 
+              <div className="mt-4 rounded-base border-4 border-foreground bg-secondary-background/80 p-4">
+                <p className="mb-2 font-semibold text-base text-foreground">Market Dynamics</p>
+                <ul className="ml-6 list-disc space-y-1 text-sm text-foreground">
+                  <li>Liquidity providers can fulfill orders at favorable rates</li>
+                  <li>Market makers earn spreads by matching orders</li>
+                  <li>Gas efficient: Single contract vs multiple protocol calls</li>
+                  <li>No AMM pools needed - direct peer-to-peer swaps</li>
+                </ul>
+              </div>
+
               <div className="mt-6 border-foreground border-t-2 pt-6">
                 <p className="mb-4 font-semibold text-lg">Contract Flow</p>
 
@@ -224,6 +254,219 @@ export function SolutionSlide() {
   );
 }
 
+export function ArchitectureSlide() {
+  return (
+    <Slide className="bg-background">
+      <div
+        className="-z-10 absolute inset-0 bg-no-repeat opacity-10"
+        style={{
+          backgroundImage: "url('/simpsons-1600x900.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <div className="z-10 w-full max-w-6xl">
+        <Card className="border-4">
+          <CardHeader>
+            <CardTitle className="text-4xl md:text-5xl">Architecture & Flow</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6 text-base md:text-lg">
+            <div className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-3">
+                <div className="rounded-base border-4 border-foreground bg-secondary-background/80 p-4 text-center">
+                  <p className="mb-2 font-bold text-lg text-foreground">1. Agent Creates Order</p>
+                  <p className="text-sm text-foreground">Agent calls createOrder() with intent</p>
+                  <p className="mt-2 text-xs text-muted-foreground">Input tokens locked in contract</p>
+                </div>
+                <div className="rounded-base border-4 border-foreground bg-secondary-background/80 p-4 text-center">
+                  <p className="mb-2 font-bold text-lg text-foreground">2. Order Listed</p>
+                  <p className="text-sm text-foreground">Order visible onchain</p>
+                  <p className="mt-2 text-xs text-muted-foreground">Anyone can fulfill</p>
+                </div>
+                <div className="rounded-base border-4 border-foreground bg-secondary-background/80 p-4 text-center">
+                  <p className="mb-2 font-bold text-lg text-foreground">3. Fulfiller Matches</p>
+                  <p className="text-sm text-foreground">Fulfiller provides output tokens</p>
+                  <p className="mt-2 text-xs text-muted-foreground">Atomic swap completes</p>
+                </div>
+              </div>
+              <div className="mt-6 rounded-base border-4 border-foreground bg-main p-6">
+                <p className="mb-3 font-bold text-lg text-main-foreground">Key Components</p>
+                <div className="grid gap-3 md:grid-cols-2 text-sm text-main-foreground">
+                  <div>
+                    <p className="font-semibold">On-Chain:</p>
+                    <ul className="ml-4 mt-1 list-disc space-y-1 bg-main">
+                      <li>BartMart.sol contract</li>
+                      <li>Order storage & matching</li>
+                      <li>Token transfers</li>
+                    </ul>
+                  </div>
+                  <div>
+                    <p className="font-semibold">Off-Chain:</p>
+                    <ul className="ml-4 mt-1 list-disc space-y-1 bg-main">
+                      <li>npm package (bartmart)</li>
+                      <li>Indexer for order discovery</li>
+                      <li>Frontend UI</li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              <div className="mt-4 text-center">
+                <p className="font-semibold">Single contract integration replaces dozens of SDK dependencies</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </Slide>
+  );
+}
+
+export function CompetitiveSlide() {
+  return (
+    <Slide className="bg-background">
+      <div
+        className="-z-10 absolute inset-0 bg-no-repeat opacity-10"
+        style={{
+          backgroundImage: "url('/simpsons-1600x900.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <div className="z-10 w-full max-w-6xl">
+        <Card className="border-4">
+          <CardHeader>
+            <CardTitle className="text-4xl md:text-5xl">Why BartMart?</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6 text-sm md:text-base">
+            <div className="overflow-x-auto">
+              <table className="w-full border-collapse">
+                <thead>
+                  <tr className="border-4 border-foreground">
+                    <th className="border-4 border-foreground bg-secondary-background/80 p-3 text-left font-bold text-foreground">
+                      Feature
+                    </th>
+                    <th className="border-4 border-foreground bg-main p-3 text-left font-bold text-main-foreground">
+                      BartMart
+                    </th>
+                    <th className="border-4 border-foreground bg-secondary-background/80 p-3 text-left font-bold text-foreground">
+                      Uniswap SDK
+                    </th>
+                    <th className="border-4 border-foreground bg-secondary-background/80 p-3 text-left font-bold text-foreground">
+                      1inch API
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr className="border-4 border-foreground">
+                    <td className="border-4 border-foreground bg-secondary-background/80 p-3 font-semibold text-foreground">
+                      Integration Complexity
+                    </td>
+                    <td className="border-4 border-foreground bg-main p-3 text-main-foreground">Single contract</td>
+                    <td className="border-4 border-foreground bg-secondary-background/80 p-3 text-foreground">Multiple SDKs</td>
+                    <td className="border-4 border-foreground bg-secondary-background/80 p-3 text-foreground">API + SDK</td>
+                  </tr>
+                  <tr className="border-4 border-foreground">
+                    <td className="border-4 border-foreground bg-secondary-background/80 p-3 font-semibold text-foreground">
+                      Protocol Updates
+                    </td>
+                    <td className="border-4 border-foreground bg-main p-3 text-main-foreground">Future-proof</td>
+                    <td className="border-4 border-foreground bg-secondary-background/80 p-3 text-foreground">Constant updates</td>
+                    <td className="border-4 border-foreground bg-secondary-background/80 p-3 text-foreground">API changes</td>
+                  </tr>
+                  <tr className="border-4 border-foreground">
+                    <td className="border-4 border-foreground bg-secondary-background/80 p-3 font-semibold text-foreground">
+                      Verifiability
+                    </td>
+                    <td className="border-4 border-foreground bg-main p-3 text-main-foreground">Fully onchain</td>
+                    <td className="border-4 border-foreground bg-secondary-background/80 p-3 text-foreground">Onchain</td>
+                    <td className="border-4 border-foreground bg-secondary-background/80 p-3 text-foreground">Offchain routing</td>
+                  </tr>
+                  <tr className="border-4 border-foreground">
+                    <td className="border-4 border-foreground bg-secondary-background/80 p-3 font-semibold text-foreground">
+                      Agent-Friendly
+                    </td>
+                    <td className="border-4 border-foreground bg-main p-3 text-main-foreground">Built for agents</td>
+                    <td className="border-4 border-foreground bg-secondary-background/80 p-3 text-foreground">Human-focused</td>
+                    <td className="border-4 border-foreground bg-secondary-background/80 p-3 text-foreground">Human-focused</td>
+                  </tr>
+                  <tr className="border-4 border-foreground">
+                    <td className="border-4 border-foreground bg-secondary-background/80 p-3 font-semibold text-foreground">
+                      OTC Support
+                    </td>
+                    <td className="border-4 border-foreground bg-main p-3 text-main-foreground">Native</td>
+                    <td className="border-4 border-foreground bg-secondary-background/80 p-3 text-foreground">AMM only</td>
+                    <td className="border-4 border-foreground bg-secondary-background/80 p-3 text-foreground">AMM only</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div className="mt-6 rounded-base border-4 border-foreground bg-main p-4">
+              <p className="font-bold text-lg text-main-foreground">Key Differentiator</p>
+              <p className="mt-2 text-sm text-main-foreground">
+                BartMart is the only solution built specifically for AI agents, prioritizing stability and verifiability
+                over protocol diversity.
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </Slide>
+  );
+}
+
+export function UseCasesSlide() {
+  return (
+    <Slide className="bg-background">
+      <div
+        className="-z-10 absolute inset-0 bg-no-repeat opacity-10"
+        style={{
+          backgroundImage: "url('/simpsons-1600x900.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <div className="z-10 w-full max-w-6xl">
+        <Card className="border-4">
+          <CardHeader>
+            <CardTitle className="text-4xl md:text-5xl">Use Cases</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6 text-base md:text-lg">
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="rounded-base border-4 border-foreground bg-secondary-background/80 p-5">
+                <p className="mb-2 font-bold text-xl text-foreground">Eigen Compute Agents</p>
+                <p className="text-sm text-foreground">
+                  Verifiable agents deployed in TEE environments need stable, auditable trading interfaces. BartMart
+                  provides a single contract that never changes.
+                </p>
+              </div>
+              <div className="rounded-base border-4 border-foreground bg-secondary-background/80 p-5">
+                <p className="mb-2 font-bold text-xl text-foreground">General AI Agents</p>
+                <p className="text-sm text-foreground">
+                  AI agents can use BartMart tools via the npm package without managing complex DeFi integrations.
+                </p>
+              </div>
+              <div className="rounded-base border-4 border-foreground bg-secondary-background/80 p-5">
+                <p className="mb-2 font-bold text-xl text-foreground">Automated Trading Bots</p>
+                <p className="text-sm text-foreground">
+                  Trading bots can fulfill orders at favorable rates, earning spreads while providing liquidity
+                  to the market.
+                </p>
+              </div>
+              <div className="rounded-base border-4 border-foreground bg-secondary-background/80 p-5">
+                <p className="mb-2 font-bold text-xl text-foreground">Human Traders</p>
+                <p className="text-sm text-foreground">
+                  OTC swaps without slippage. Perfect for large trades or specific token pairs not
+                  available on AMMs.
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </Slide>
+  );
+}
+
 export function ResultSlide() {
   const installSnippet = `npm install bartmart
 # or
@@ -274,14 +517,25 @@ const orders = await fetchOrdersTool.execute({
               <Image alt="npm" className="h-8 w-auto" height={32} src="/npm_logo.png" width={80} />
             </div>
             <p className="mt-2 text-lg text-muted-foreground">Agents deployed to TEEs with one simple trading tool</p>
-            <a
-              className="mt-1 text-base text-primary hover:underline"
-              href="https://www.npmjs.com/package/bartmart"
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              npmjs.com/package/bartmart
-            </a>
+            <div className="mt-2 flex flex-wrap items-center gap-4">
+              <a
+                className="text-base text-primary hover:underline"
+                href="https://www.npmjs.com/package/bartmart"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                npmjs.com/package/bartmart
+              </a>
+              <span className="text-muted-foreground">•</span>
+              <a
+                className="text-base text-primary hover:underline"
+                href="https://basescan.org/address/0x03735E64c156d8C0D79a0cc5Fd979A95f67FC94C"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Contract: 0x0373...FC94C
+              </a>
+            </div>
           </CardHeader>
           <CardContent className="space-y-6 text-sm md:text-base">
             <div className="space-y-6">
@@ -300,6 +554,15 @@ const orders = await fetchOrdersTool.execute({
                       <li>Stable, verifiable agent implementations</li>
                       <li>Works with any token onchain</li>
                       <li>Trust through onchain verifiability</li>
+                      <li>AI SDK compatible out of the box</li>
+                    </ul>
+                  </div>
+                  <div className="rounded-base border-4 border-foreground bg-secondary-background/80 p-4">
+                    <p className="mb-2 font-semibold text-base text-foreground">Performance</p>
+                    <ul className="ml-6 list-disc space-y-1 text-sm text-foreground">
+                      <li>Single contract call vs multiple protocol calls</li>
+                      <li>Lower gas costs for OTC swaps</li>
+                      <li>No slippage on fulfilled orders</li>
                     </ul>
                   </div>
 
@@ -359,6 +622,185 @@ const orders = await fetchOrdersTool.execute({
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </Slide>
+  );
+}
+
+export function TractionSlide() {
+  return (
+    <Slide className="bg-background">
+      <div
+        className="-z-10 absolute inset-0 bg-no-repeat opacity-10"
+        style={{
+          backgroundImage: "url('/simpsons-1600x900.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <div className="z-10 w-full max-w-6xl">
+        <Card className="border-4">
+          <CardHeader>
+            <CardTitle className="text-4xl md:text-5xl">Traction & Metrics</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6 text-base md:text-lg">
+            <div className="mt-6 rounded-base border-4 border-foreground bg-main p-6">
+              <p className="mb-3 font-bold text-lg text-main-foreground">Current Status</p>
+              <ul className="ml-4 space-y-2 text-sm text-main-foreground bg-main">
+                <li>✓ Smart contract deployed and verified on Base</li>
+                <li>✓ npm package published</li>
+                <li>✓ Frontend UI deployed to Eigen Compute TEE</li>
+                <li>✓ AI SDK integration ready</li>
+                <li>✓ Comprehensive test coverage</li>
+              </ul>
+            </div>
+            <div className="mt-6 flex items-center gap-4 rounded-base border-4 border-foreground bg-secondary-background/80 p-6">
+              <Image
+                alt="Eigen Cloud"
+                className="h-8 w-auto"
+                height={32}
+                src="/eigencloud-logo-blue.png"
+                width={120}
+              />
+              <p className="font-bold text-foreground">
+                Frontend UI deployed verifiably on Eigen Compute TEE for trustless execution
+              </p>
+            </div>
+            <div className="mt-4 text-center">
+              <p className="font-semibold text-lg">Ready for production use by AI agents and traders</p>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </Slide>
+  );
+}
+
+export function RoadmapSlide() {
+  return (
+    <Slide className="bg-background">
+      <div
+        className="-z-10 absolute inset-0 bg-no-repeat opacity-10"
+        style={{
+          backgroundImage: "url('/simpsons-1600x900.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <div className="z-10 w-full max-w-6xl">
+        <Card className="border-4">
+          <CardHeader>
+            <CardTitle className="text-4xl md:text-5xl">Roadmap</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6 text-base md:text-lg">
+            <div className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="rounded-base border-4 border-foreground bg-secondary-background/80 p-5">
+                  <p className="mb-2 font-bold text-xl text-foreground">Near Term</p>
+                  <ul className="ml-4 list-disc space-y-2 text-sm text-foreground">
+                    <li>Open source trading agent showcase</li>
+                    <li>Eigen Compute integration examples</li>
+                    <li>Enhanced documentation</li>
+                  </ul>
+                </div>
+                <div className="rounded-base border-4 border-foreground bg-secondary-background/80 p-5">
+                  <p className="mb-2 font-bold text-xl text-foreground">Future</p>
+                  <ul className="ml-4 list-disc space-y-2 text-sm text-foreground">
+                    <li>Multi-chain expansion</li>
+                    <li>Advanced order types</li>
+                    <li>Community-driven features</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="mt-6 flex items-center gap-4 rounded-base border-4 border-foreground bg-main p-6">
+                <Image
+                  alt="Eigen Cloud"
+                  className="h-8 w-auto"
+                  height={32}
+                  src="/eigencloud-logo-blue.png"
+                  width={120}
+                />
+                <p className="font-bold text-main-foreground">
+                  Next milestone: Open source trading agent deployed verifiably with Eigen Compute
+                </p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </Slide>
+  );
+}
+
+export function CallToActionSlide() {
+  return (
+    <Slide className="bg-background">
+      <div
+        className="-z-10 absolute inset-0 bg-no-repeat opacity-10"
+        style={{
+          backgroundImage: "url('/simpsons-1600x900.png')",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+        }}
+      />
+      <div className="z-10 w-full max-w-5xl">
+        <Card className="border-4">
+          <CardHeader>
+            <CardTitle className="text-4xl md:text-5xl">Get Involved</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6 text-base md:text-lg">
+            <div className="space-y-4">
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="rounded-base border-4 border-foreground bg-secondary-background/80 p-5">
+                  <p className="mb-3 font-bold text-xl text-foreground">For Developers</p>
+                  <ul className="ml-4 space-y-2 text-sm text-foreground">
+                    <li>
+                      <a
+                        className="text-primary hover:underline"
+                        href="https://www.npmjs.com/package/bartmart"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        Install: npm install bartmart
+                      </a>
+                    </li>
+                    <li>
+                      <a
+                        className="text-primary hover:underline"
+                        href="https://github.com"
+                        rel="noopener noreferrer"
+                        target="_blank"
+                      >
+                        GitHub: Contribute & star
+                      </a>
+                    </li>
+                    <li>Read the docs</li>
+                    <li>Build agent integrations</li>
+                  </ul>
+                </div>
+                <div className="rounded-base border-4 border-foreground bg-secondary-background/80 p-5">
+                  <p className="mb-3 font-bold text-xl text-foreground">For Traders</p>
+                  <ul className="ml-4 space-y-2 text-sm text-foreground">
+                    <li>Create OTC orders</li>
+                    <li>Fulfill orders for spreads</li>
+                    <li>No slippage on fulfilled orders</li>
+                    <li>Trade any token pair</li>
+                  </ul>
+                </div>
+              </div>
+              <div className="mt-6 rounded-base border-4 border-foreground bg-main p-6">
+                <p className="mb-3 font-bold text-xl text-main-foreground">Partnership Opportunities</p>
+                <p className="text-sm text-main-foreground">
+                  Interested in integrating BartMart into your agent platform, DeFi protocol, or trading infrastructure?
+                  Let's collaborate!
+                </p>
+              </div>
+              <div className="mt-4 text-center">
+                <p className="font-semibold text-lg">Join the future of agent-driven DeFi</p>
               </div>
             </div>
           </CardContent>
