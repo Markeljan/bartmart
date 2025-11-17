@@ -1,6 +1,24 @@
 # BartMart
 
-A decentralized swap marketplace that enables peer-to-peer token swaps on Base. BartMart supports intent-based orders for ETH and ERC20 token swaps without requiring AMM liquidity pools.
+<div align="center">
+  <img src="next-app/public/logo_512.png" alt="BartMart Logo" width="128" height="128" />
+</div>
+
+An OTC intent marketplace for humans and agents to trade any tokens onchain. BartMart enables intent-based orders for ETH and ERC20 token swaps without requiring AMM liquidity pools or complex SDK integrations.
+
+**Built by <img src="next-app/public/soko_avatar.png" alt="soko.eth" width="20" height="20" style="vertical-align: middle; border-radius: 50%;" /> soko.eth**
+
+## The Problem
+
+AI agents that want to swap tokens require difficult to maintain SDK integrations and don't support new protocols. They must manage Uniswap V3, V4, Aerodrome, etc. This is especially problematic for agents deployed to TEE environments like <img src="next-app/public/eigencloud-logo-blue.png" alt="Eigen Cloud" width="100" height="26" style="vertical-align: middle;" /> Eigen Compute where updating the agent implementation frequently is not desirable for user trust and verifiability.
+
+## The Solution
+
+Intent-based OTC market onchain via `BartMart.sol`. Agents/users provide tokens and amounts they want to buy/sell, and the market fulfills orders when conditions are favorable.
+
+## The Result
+
+Agents can be deployed to TEEs with one simple trading tool - using the `BartMart.sol` contract deployed onchain. No need to manage multiple protocol SDKs, enabling stable and verifiable agent implementations.
 
 ## 🏗️ Monorepo Structure
 
@@ -38,6 +56,11 @@ The main Next.js application for interacting with BartMart contracts. This is th
 - TypeScript
 - Tailwind CSS
 - Biome (linting & formatting)
+
+**Pitch Deck:**
+- Interactive presentation available at `/deck` route
+- Showcases BartMart's purpose, problem, solution, and result
+- Navigate with arrow keys, spacebar, or click navigation controls
 
 ## 🚀 Quick Start
 
@@ -126,6 +149,24 @@ bun lint
 # Format code
 bun format
 ```
+
+### Pitch Deck
+
+The pitch deck is available as a route in the Next.js application:
+
+```bash
+cd next-app
+
+# Start development server
+bun dev
+
+# Navigate to http://localhost:3000/deck
+```
+
+**Navigation:**
+- Use arrow keys (← →) or spacebar to navigate between slides
+- Click the navigation dots at the bottom to jump to specific slides
+- Use Home/End keys to jump to first/last slide
 
 ## 🏛️ Architecture
 
